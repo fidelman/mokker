@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const createRouter = require('./routes');
+const controller = require('./controller');
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
   }
 });
 
-const runServer = ({
+const start = ({
   routes,
   port
 }) => {
@@ -32,4 +33,9 @@ const runServer = ({
   console.log(`App started on port: ${mockPort}`);
 };
 
-module.exports.runServer = runServer;
+module.exports = { 
+  start,
+  controller: {
+    queryCondition: controller.queryCondition
+  }
+};

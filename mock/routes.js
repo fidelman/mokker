@@ -8,8 +8,11 @@ Router.use((req, res, next) => {
 
 const createRouter = (routes) => {
     routes.forEach((route) => {
-        const { method, url, controller } = route;
-        const formatedMethod = method.toUpperCase();
+        const { url } = route;
+        const formatedMethod = route.method.toUpperCase();
+        const returnJSON = (req, res) => res.json(route.json);
+
+        const controller = route.controller || returnJSON;
 
         switch (formatedMethod) {
         case 'GET': 

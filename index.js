@@ -1,11 +1,34 @@
-const runServer = require('./mock').runServer;
+const server = require('./mock');
+
+const controller = (req, res) => {
+    server.controller.queryCondition({
+        url: req.url,
+        key: '@x',
+        reject: () => res.json({ 'message': 'reject' }),
+        resolvers: [
+            {
+                value: 1,
+                resolve: () => res.json({ 'value': 1 })
+            },
+            {
+                value: 2,
+                resolve: () => res.json({ 'value': 2 })
+            }
+        ]
+    });
+};
 
 const routes = [
     {
         method: 'get',
         url: '/test',
-        controller: (req, res) => res.json({ hi: 1 })
+        controller
+    },
+    {
+        method: 'get',
+        url: '/test2',
+        json: { 'simple-json': true }
     }
-]
+];
 
-runServer({ routes });
+server.start({ routes });
