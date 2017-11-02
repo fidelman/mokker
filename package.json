@@ -1,7 +1,7 @@
 {
-  "name": "actum-mock-server",
+  "name": "mokker",
   "version": "1.0.0",
-  "description": "Simple mock server to emulate Rest API",
+  "description": "Simple Rest API mock server",
   "main": "index.js",
   "author": "Andrei Fidelman",
   "license": "MIT",
@@ -11,5 +11,22 @@
     "morgan": "^1.9.0",
     "query-string": "^5.0.1",
     "url-query": "^2.0.0"
+  },
+  "keywords": [
+    "express",
+    "mock",
+    "node",
+    "REST",
+    "API",
+    "functional",
+    "api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fidelman/mokker"
+  },
+  "preferGlobal": true,
+  "bugs": {
+    "url": "https://github.com/fidelman/mokker/issues"
   }
 }
