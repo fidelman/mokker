@@ -2,7 +2,7 @@ const server = require('./mock');
 
 const controller = (req, res) => {
     server.controller.queryCondition({
-        url: req.url,
+        req,
         key: '@x',
         reject: () => res.json({ 'message': 'reject' }),
         resolvers: [

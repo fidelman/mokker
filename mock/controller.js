@@ -1,11 +1,13 @@
 const queryString = require('query-string');
 
 const queryCondition = ({
-    url,
+    req,
     key,
     reject,
     resolvers
 }) => {
+    const url = req.headers.referer || req.url;
+
     const formatedUrl = url.slice(url.indexOf('?'));
     const actualValue = queryString.parse(formatedUrl)[key];
     let sent = false;
