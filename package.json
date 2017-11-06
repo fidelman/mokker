@@ -11,6 +11,10 @@
     "morgan": "^1.9.0",
     "query-string": "^5.0.1"
   },
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "cd test/ && mocha test.js"
+  },
   "keywords": [
     "express",
     "mock",
@@ -27,5 +31,12 @@
   "preferGlobal": true,
   "bugs": {
     "url": "https://github.com/fidelman/mokker/issues"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "mocha": "^4.0.1",
+    "request": "^2.83.0",
+    "should": "^13.1.3"
   }
 }

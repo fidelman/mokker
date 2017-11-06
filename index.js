@@ -1,34 +1,37 @@
-const server = require('./mock');
+const bodyParser = require('body-parser');
+const express = require('express');
+const morgan = require('morgan');
+const createRouter = require('./routes');
+const controller = require('./controller');
 
-const controller = (req, res) => {
-    server.controllerQueryCondition({
-        req,
-        key: '@x',
-        reject: () => res.json({ 'message': 'reject' }),
-        resolvers: [
-            {
-                value: 1,
-                resolve: () => res.json({ 'value': 1 })
-            },
-            {
-                value: 2,
-                resolve: () => res.json({ 'value': 2 })
-            }
-        ]
-    });
+const app = express();
+
+app.use(bodyParser.json());
+app.use(morgan('dev'));
+
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers',
+      'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key');
+
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+const start = ({
+  routes = [],
+  port = 3000
+}) => {
+  app.use('/', createRouter(routes));
+  app.listen(port);
+  console.log(`App started on port: ${port}`);
 };
 
-const routes = [
-    {
-        method: 'get',
-        url: '/test',
-        controller
-    },
-    {
-        method: 'get',
-        url: '/test2',
-        json: { 'simple-json': true }
-    }
-];
-
-server.start({ routes });
+module.exports = { 
+  start,
+  controllerQueryCondition: controller.queryCondition
+};
