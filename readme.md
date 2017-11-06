@@ -120,7 +120,7 @@ The controller is fired if key and value are equal to query string
 ### Simple GET request
 ```
 // index.js
-const server = require('./mock');
+const server = require('mokker');
 
 const routes = [{
     method: 'get',
@@ -138,7 +138,7 @@ server.start({ routes });
 // if host url has ?@x=2 it will get { 'value': 2 }
 // if host url has ?@x=3 it will get { 'message': 'reject' }
 
-const server = require('./mock');
+const server = require('mokker');
 
 const controller = (req, res) => {
     server.controllerQueryCondition({
@@ -170,7 +170,7 @@ server.start({ routes });
 ```
 // index.js
 
-const server = require('./mock');
+const server = require('mokker');
 
 const controller = (req, res) => {
     const { body } = req;
