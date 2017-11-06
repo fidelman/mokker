@@ -23,14 +23,12 @@ app.use((req, res, next) => {
 });
 
 const start = ({
-  routes,
-  port
+  routes = [],
+  port = 3000
 }) => {
-  const mockPort = port || 3000;
-
   app.use('/', createRouter(routes));
-  app.listen(mockPort);
-  console.log(`App started on port: ${mockPort}`);
+  app.listen(port);
+  console.log(`App started on port: ${port}`);
 };
 
 module.exports = { 
