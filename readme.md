@@ -70,5 +70,51 @@ const controller = (req, res) => {
 ##### json: object
 static JSON, which will be returned.
 
+### .controllerQueryCondition(object)
+Create the controller with query string conditions
+
+```
+const server = require('./mock');
+
+const controller = (req, res) => {
+    server.controllerQueryCondition({
+        req,
+        key: '@x',
+        reject: () => res.json({ 'message': 'reject' }), // invoked if rejects the condition
+        resolvers: [
+            {
+                value: 1,
+                resolve: () => res.json({ 'value': 1 }) // invoked if @x = 1
+            },
+            {
+                value: 2,
+                resolve: () => res.json({ 'value': 2 }) // invoked if @x = 2
+            }
+        ]
+    });
+};
+
+```
+
+#### req: object
+Type: `object`\
+Required\
+Taken from the arguments
+
+#### key: string
+The query string key
+
+#### reject: function
+The controller if rejects the condition
+
+#### resolvers: array
+The array of objects with value and resolve function
+
+##### value: string
+The query string value
+
+##### resolve: function
+The controller is fired if key and value are equal to query string
+
 ## License
 MIT

@@ -1,7 +1,7 @@
 const server = require('./mock');
 
 const controller = (req, res) => {
-    server.controller.queryCondition({
+    server.controllerQueryCondition({
         req,
         key: '@x',
         reject: () => res.json({ 'message': 'reject' }),

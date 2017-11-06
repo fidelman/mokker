@@ -33,7 +33,5 @@ const start = ({
 
 module.exports = { 
   start,
-  controller: {
-    queryCondition: controller.queryCondition
-  }
+  controllerQueryCondition: controller.queryCondition
 };
