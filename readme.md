@@ -1,5 +1,5 @@
 # Mokker
-Mokker is a simple express Reast API mock server, which also provides few methods to make your data emulating easier.
+Mokker is a simple express REST API mock server, which also provides few methods to make your data emulating easier.
 
 ## Instalation
 ```
@@ -54,7 +54,7 @@ A route method is derived from one of the HTTP methods.
 A route path, define the endpoints at which requests can be made. Supports query parametres.
 
 ##### controller: function
-A request method, how the endpoints should responde to the request. The same controller as in Express Routing.
+A request method, how the endpoints should respond to the request. The same controller as in Express Routing.
 ```
 const controller = (req, res) => {
     // params – params in query string /api/:id
