@@ -116,5 +116,77 @@ The query string value
 ##### resolve: function
 The controller is fired if key and value are equal to query string
 
+## Examples
+### Simple GET request
+```
+// index.js
+const server = require('./mock');
+
+const routes = [{
+    method: 'get',
+    url: '/api',
+    json: { is: 'done' }
+}];
+
+server.start({ routes });
+```
+
+### GET request with query string conditions
+```
+// index.js
+// if host url has ?@x=1 it will get { 'value': 1 }
+// if host url has ?@x=2 it will get { 'value': 2 }
+// if host url has ?@x=3 it will get { 'message': 'reject' }
+
+const server = require('./mock');
+
+const controller = (req, res) => {
+    server.controllerQueryCondition({
+        req,
+        key: '@x',
+        reject: () => res.json({ 'message': 'reject' }),
+        resolvers: [
+            {
+                value: 1,
+                resolve: () => res.json({ 'value': 1 })
+            },
+            {
+                value: 2,
+                resolve: () => res.json({ 'value': 2 })
+            }
+        ]
+    });
+};
+
+const routes = [{
+    method: 'get',
+    url: '/api',
+    controller
+}];
+
+server.start({ routes });
+```
+### Simple POST request
+```
+// index.js
+
+const server = require('./mock');
+
+const controller = (req, res) => {
+    const { body } = req;
+    body.id = +new Date;
+    res.json(body);
+};
+
+const routes = [{
+    method: 'get',
+    url: '/api',
+    controller
+}];
+
+server.start({ routes });
+```
+
+
 ## License
 MIT
