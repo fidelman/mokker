@@ -40,12 +40,12 @@ Start the server
 #### port
 Type: `number`\
 Default: `3000`\
-Set the port number where the APi will accessible
+Set the port number where the API will be accessible.
 
 #### routes
 Type: `array`\
 Default: `[]`\
-Set endpoints and how they should response to a client request
+Set endpoints and how they should response to a client request.
 
 ##### method: string
 A route method is derived from one of the HTTP methods.
@@ -71,7 +71,7 @@ const controller = (req, res) => {
 static JSON, which will be returned.
 
 ### .controllerQueryCondition(object)
-Create the controller with query string conditions
+Create the controller with query string conditions.
 
 ```
 const server = require('./mock');
