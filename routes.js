@@ -28,7 +28,7 @@ const createRouter = (routes) => {
             Router.delete(url, controller);
             break;
         default:
-            throw new Error(formatedMethod + 'is wrong method');
+            throw new Error(`${formatedMethod} is wrong method`);
             break;
         }
     });
