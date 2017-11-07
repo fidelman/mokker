@@ -13,6 +13,7 @@ yarn add -D mokker
 - express
 - morgan
 - query-string
+– react-dev-utils
 
 ## Usage
 
@@ -37,7 +38,7 @@ mokker.start({ routes });
 ### .start(object)
 Start the server
 
-#### port
+#### defaultPort
 Type: `number`\
 Default: `3000`\
 Set the port number where the APi will accessible

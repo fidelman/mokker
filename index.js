@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
+const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
 const createRouter = require('./routes');
 const controller = require('./controller');
 
@@ -24,11 +25,15 @@ app.use((req, res, next) => {
 
 const start = ({
   routes = [],
-  port = 3000
+  defaultPort = 3000
 }) => {
   app.use('/', createRouter(routes));
-  app.listen(port);
-  console.log(`App started on port: ${port}`);
+
+  choosePort('0.0.0.0', defaultPort)
+    .then((port) => {
+      if (port == null) return;
+      app.listen(port, () => console.log(`App started on port: ${port}`));
+    });  
 };
 
 module.exports = { 
