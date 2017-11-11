@@ -1,6 +1,10 @@
 # Mokker
 Mokker is a simple express REST API mock server, which also provides few methods to make your data emulating easier.
 
+## Features
+- GET conditioning
+- Auto-generation of documentation
+
 ## Instalation
 ```
 npm i --D mokker
@@ -8,12 +12,13 @@ yarn add -D mokker
 ```
 
 ## Dependencies
-- nodemon !!!globally
 - body-parser
 - express
 - morgan
 - query-string
 – react-dev-utils
+– json2md
+– fs
 
 ## Usage
 
@@ -43,6 +48,21 @@ Type: `number`\
 Default: `3000`\
 Set the port number where the API will be accessible.
 
+#### docs
+Type: `object`\
+Default: `null`\
+Set props to generate documentation
+
+##### url
+Type: `string`\
+Default: `path.resolve(process.cwd(), 'rest-docs.md')`\
+Set global path where to save the documentation
+
+##### description
+Type: `string`\
+Default: `'Rest API documentation'`\
+The title of the documentation
+
 #### routes
 Type: `array`\
 Default: `[]`\
@@ -50,6 +70,10 @@ Set endpoints and how they should response to a client request.
 
 ##### method: string
 A route method is derived from one of the HTTP methods.
+
+##### description: string
+Default: ''\
+Set the description of the route in the documentation
 
 ##### url: string
 A route path, define the endpoints at which requests can be made. Supports query parametres.

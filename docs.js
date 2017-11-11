@@ -55,7 +55,7 @@ const getJSONDocs = (obj) => {
 
 const generateDocumentation = (documentation, routes) => {
     routes.forEach((route) => {
-        documentation.push({ h2: route.description });
+        documentation.push({ h2: route.description || '' });
         documentation.push({ h3: 'Method' });
         documentation.push({ p: route.method });
         documentation.push({ h3: 'URL' });

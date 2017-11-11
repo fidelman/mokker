@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
 const json2md = require('json2md');
 const fs = require('fs');
+const path = require('path');
 const createRouter = require('./routes');
 const controller = require('./controller');
 const generateDocumentation = require('./docs');
@@ -49,7 +50,7 @@ const start = ({
 
       generateDocumentation(documentation, routes);
 
-      fs.writeFile(docs.url, json2md(documentation) , (err) => {
+      fs.writeFile(docs.url || path.resolve(process.cwd(), 'rest-docs.md'), json2md(documentation) , (err) => {
         if(err) return console.log(err);
         console.log(`The docs has been updated ${docs.url}`);
       });
