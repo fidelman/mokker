@@ -2,8 +2,11 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
+const json2md = require('json2md');
+const fs = require('fs');
 const createRouter = require('./routes');
 const controller = require('./controller');
+const generateDocumentation = require('./docs');
 
 const app = express();
 
@@ -23,9 +26,12 @@ app.use((req, res, next) => {
   }
 });
 
+
+
 const start = ({
   routes = [],
-  defaultPort = 3000
+  defaultPort = 3000,
+  docs = null
 }) => {
   app.use('/', createRouter(routes));
 
@@ -33,7 +39,21 @@ const start = ({
     .then((port) => {
       if (port == null) return;
       app.listen(port, () => console.log(`App started on port: ${port}`));
-    });  
+    });
+
+    if (docs) {
+
+      const documentation = [
+        {h1: docs.description || 'Rest API documentation'}
+      ];
+
+      generateDocumentation(documentation, routes);
+
+      fs.writeFile(docs.url, json2md(documentation) , (err) => {
+        if(err) return console.log(err);
+        console.log(`The docs has been updated ${docs.url}`);
+      });
+  }
 };
 
 module.exports = { 
