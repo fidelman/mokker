@@ -10,18 +10,32 @@ const queryCondition = ({
 
     const formatedUrl = url.slice(url.indexOf('?'));
     const actualValue = queryString.parse(formatedUrl)[key];
-    let sent = false;
-    resolvers.forEach((resolver) => {
-        const { value, resolve } = resolver;
-        if (actualValue === value.toString()) {
-            sent = true;
-            resolve();
-        }
-    });
+    
+    const matchedResolver = resolvers.find(resolver => actualValue === resolver.value.toString());
 
-    if (!sent) reject();
+    return matchedResolver ? matchedResolver.resolve : reject;
+};
+
+const mainController = (customContoller) => {
+    return (req, res) => {
+        const typeofCustomController = typeof customContoller;
+        let response = {};
+
+        if (typeofCustomController === 'function') {
+            const { body, params, query } = req;
+            const data = { body, params, query };
+            response = customContoller(data, req, res);
+        } else if (typeofCustomController === 'object' && !Array.isArray(customContoller)) {
+            response = customContoller;
+        } else {
+            throw new Error(`Unacceptable type of controller: ${typeofCustomController}. It must be 'object' or 'function'.`);
+        }
+        
+        res.json(response);
+    }
 };
 
 module.exports = {
-    queryCondition
+    queryCondition,
+    mainController
 };

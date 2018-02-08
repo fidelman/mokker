@@ -1,4 +1,5 @@
 const Router = require('express').Router();
+const mainController = require('./controller').mainController;
 
 Router.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -8,28 +9,16 @@ Router.use((req, res, next) => {
 
 const createRouter = (routes) => {
     routes.forEach((route) => {
-        const { url } = route;
-        const formatedMethod = route.method.toUpperCase();
-        const returnJSON = (req, res) => res.json(route.json);
+        const formatedMethod = route.method.toLowerCase();
 
-        const controller = route.controller || returnJSON;
+        const controller = route.controller
+            ? mainController(route.controller)
+            : mainController(route.json);
 
-        switch (formatedMethod) {
-        case 'GET': 
-            Router.get(url, controller);
-            break;
-        case 'POST': 
-            Router.post(url, controller);
-            break;
-        case 'PUT': 
-            Router.put(url, controller);
-            break;
-        case 'DELETE': 
-            Router.delete(url, controller);
-            break;
-        default:
+        try {
+            Router[formatedMethod](route.url, controller);
+        } catch (e) {
             throw new Error(`${formatedMethod} is a wrong method`);
-            break;
         }
     });
 
