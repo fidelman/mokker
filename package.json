@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Simple Rest API mock server",
   "main": "index.js",
-  "author": "Andrei Fidelman <fidelmanlife@gmail.com>",
+  "author": {
+    "name": "Andrei Fidelman",
+    "email": "fidelmanlife@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
