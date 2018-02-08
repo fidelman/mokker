@@ -1,9 +1,9 @@
 {
   "name": "mokker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Simple Rest API mock server",
   "main": "index.js",
-  "author": "Andrei Fidelman",
+  "author": "Andrei Fidelman <fidelmanlife@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -27,12 +27,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/fidelman/mokker"
+    "url": "https://github.com/fidelman/mokker.git"
   },
   "preferGlobal": true,
   "bugs": {
     "url": "https://github.com/fidelman/mokker/issues"
   },
+  "homepage": "https://github.com/fidelman/mokker",
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
