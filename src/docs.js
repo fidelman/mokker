@@ -40,7 +40,19 @@ const docObj = (obj, result, tabs) => {
     result.content.push(`${generateTab(tabs - 1)}}`);
 };
 
-const getJSONDocs = (obj) => {
+const getParamsFromUrl = (url) => {
+    const arrayOfSlashes = url.split('/');
+    const arrayOfParams = arrayOfSlashes.filter(item => item.includes(':'));
+    const paramsObj = {};
+    arrayOfParams.forEach((item) => {
+        console.log(item);
+        paramsObj[item.replace(':', '')] = '';
+    });
+
+    return paramsObj;
+};
+
+const getJSONDocs = (stuff, body, url) => {
     const result = {
         language: 'js',
         content: ['{']
@@ -48,22 +60,59 @@ const getJSONDocs = (obj) => {
 
     let tabs = 1;
 
-    docObj(obj, result, tabs);
+    if (typeof stuff === 'object') {
+        docObj(stuff, result, tabs);
+    } else {
+        const obj = stuff({
+            body,
+            params: getParamsFromUrl(url)
+        });
+
+        docObj(obj, result, tabs);
+    }
 
     return result;
 };
 
-export default (documentation, routes) => {
-    routes.forEach((route) => {
-        documentation.push({ h2: route.description || '' });
-        documentation.push({ h3: 'Method' });
-        documentation.push({ p: route.method });
-        documentation.push({ h3: 'URL' });
-        documentation.push({ p: route.url });
-      
-        if (route.json) {
-          documentation.push({ h3: 'Response' });
-          documentation.push({ code: getJSONDocs(route.json) });
-        }
-    });
+const getFileName = (fileName) => {
+    return `${fileName.toLocaleLowerCase().replace(new RegExp(' ', 'g'), '-')}.md`;
+};
+
+export default (route) => {
+    const { docs } = route;
+
+    const file = [
+        { h1: docs.title },
+
+        { blockquote: docs.description },
+
+        { h2: 'Method' },
+        { p: route.method.toLocaleUpperCase() },
+        
+        { h2: 'URL' },
+        { code: {
+            language: 'js',
+            content: [route.url]
+        }}
+    ];
+
+    if (docs.parameters) {
+        file.push({ h2: 'Parameters' });
+        file.push({ code: getJSONDocs(docs.parameters) });
+    }
+
+    if (route.json) {
+        file.push({ h2: 'Response' });
+        file.push({ code: getJSONDocs(route.json) });
+    } else if (route.controller) {
+        file.push({ h2: 'Response' });
+        file.push({ code: getJSONDocs(route.controller, docs.parameters, route.url) });
+    }
+
+    const fileName = getFileName(docs.fileName);
+
+    return {
+        fileName,
+        file
+    }
 };

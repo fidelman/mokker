@@ -1,4 +1,3 @@
-const path = require('path');
 const server = require('../public/index');
 
 const controllerQueryCondition = (data, req) => {
@@ -19,35 +18,55 @@ const controllerQueryCondition = (data, req) => {
     });
 };
 
-const controllerGet = () => ({ 'simple-json': true });
+const controllerGet = {
+    'simple-json': true,
+    'obj': {
+        'hi': '1',
+        'hello': {
+            '1': 2
+        }
+    }
+};
 
-const controllerPost = data => data.body;
+const controllerPost = data => {
+    const { body, params } = data;
+    body.time = +new Date;
+    body.id = params.id;
+    return body;
+};
 
 const routes = [
     {
-        description: 'Test get condition',
         method: 'get',
         url: '/test/condition',
         controller: controllerQueryCondition
     },
     {
-        description: 'Test get',
+        docs: {
+            title: 'Test get',
+            description: '',
+            fileName: 'simple-get'
+        },
         method: 'get',
         url: '/test/get',
         json: controllerGet
     },
     {
-        description: 'Test post',
+        docs: {
+            title: 'Test post',
+            description: '',
+            fileName: 'simple-post',
+            parameters: {
+                name: '',
+                surname: ''
+            }
+        },
         method: 'post',
-        url: '/test/post',
+        url: '/test/post/:id',
         controller: controllerPost
     }
 ];
 
 server.start({ 
-    routes,
-    docs: {
-        url: path.resolve(process.cwd(), 'rest-docs.md'),
-        description: 'Rest API'
-    }
+    routes
 });

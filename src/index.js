@@ -5,6 +5,7 @@ const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
 const json2md = require('json2md');
 const fs = require('fs');
 const path = require('path');
+const colors = require('colors');
 
 import createRouter from './routes';
 import { queryCondition } from './controller';
@@ -33,37 +34,28 @@ app.use((req, res, next) => {
 const start = ({
   routes = [],
   defaultPort = 3000,
-  docs = null
+  docsUrl = path.resolve(process.cwd(), 'docs')
 }) => {
   app.use('/', createRouter(routes));
 
   choosePort('0.0.0.0', defaultPort)
     .then((port) => {
       if (port == null) return;
-      app.listen(port, () => console.log(`App started on port: ${port}`));
+      app.listen(port, () => console.log(`App started on port: ${port}`.green));
     });
+  routes.forEach((route) => {
+    if (route.docs) {
+      const documentation = generateDocumentation(route);
 
-    if (docs) {
-
-      const documentation = [
-        {h1: docs.description || 'Rest API documentation'}
-      ];
-
-      generateDocumentation(documentation, routes);
-
-      fs.writeFile(docs.url || path.resolve(process.cwd(), 'rest-docs.md'), json2md(documentation) , (err) => {
+      fs.writeFile(`${docsUrl}/${documentation.fileName}`, json2md(documentation.file) , (err) => {
         if(err) return console.log(err);
-        console.log(`The docs has been updated ${docs.url}`);
+        console.log(`The docs has been updated ${docsUrl}/${documentation.fileName}`.green);
       });
-  }
+    }
+  });
 };
 
 module.exports = { 
   start,
-<<<<<<< HEAD:index.js
-  controllerQueryCondition: controller.queryCondition
-};
-=======
   controllerQueryCondition: queryCondition
 };
->>>>>>> master:src/index.js
