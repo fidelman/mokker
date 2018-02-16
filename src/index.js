@@ -2,8 +2,9 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
-const createRouter = require('./routes');
-const controller = require('./controller');
+
+import createRouter from './routes';
+import { queryCondition } from './controller';
 
 const app = express();
 
@@ -38,5 +39,5 @@ const start = ({
 
 module.exports = { 
   start,
-  controllerQueryCondition: controller.queryCondition
+  controllerQueryCondition: queryCondition
 };

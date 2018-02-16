@@ -190,4 +190,4 @@ server.start({ routes });
 
 
 ## License
-MIT
+This project is licensed under [MIT License](https://github.com/fidelman/mokker/blob/master/LICENSE.md). See the license file for more details.
