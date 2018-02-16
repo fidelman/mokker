@@ -18,7 +18,8 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "dev": "npm-run-all --parallel start watch",
-    "start": "cd test/ && nodemon index.js"
+    "start": "cd test/ && nodemon index.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "express",
