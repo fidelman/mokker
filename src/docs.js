@@ -53,7 +53,7 @@ const getJSONDocs = (obj) => {
     return result;
 };
 
-const generateDocumentation = (documentation, routes) => {
+export default (documentation, routes) => {
     routes.forEach((route) => {
         documentation.push({ h2: route.description || '' });
         documentation.push({ h3: 'Method' });
@@ -67,7 +67,3 @@ const generateDocumentation = (documentation, routes) => {
         }
     });
 };
-
-
-
-module.exports = generateDocumentation;

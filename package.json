@@ -1,9 +1,13 @@
 {
   "name": "mokker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple Rest API mock server",
-  "main": "index.js",
-  "author": "Andrei Fidelman",
+  "module": "src/index.js",
+  "main": "public/index.js",
+  "author": {
+    "name": "Andrei Fidelman",
+    "email": "fidelmanlife@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -11,12 +15,14 @@
     "fs": "0.0.1-security",
     "json2md": "^1.5.10",
     "morgan": "^1.9.0",
-    "query-string": "^5.0.1",
     "react-dev-utils": "^4.2.1"
   },
   "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "dev": "npm-run-all --parallel start watch",
     "start": "cd test/ && nodemon index.js",
-    "test": "cd test/ && mocha test.js"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "express",
@@ -29,17 +35,27 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/fidelman/mokker"
+    "url": "https://github.com/fidelman/mokker.git"
   },
   "preferGlobal": true,
   "bugs": {
     "url": "https://github.com/fidelman/mokker/issues"
   },
+  "homepage": "https://github.com/fidelman/mokker",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "path": "^0.12.7",
     "mocha": "^4.0.1",
+    "query-string": "^5.1.0",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.0.3",
+    "rollup-plugin-uglify": "^3.0.0",
     "should": "^13.1.3"
   }
 }

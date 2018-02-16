@@ -5,9 +5,10 @@ const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
 const json2md = require('json2md');
 const fs = require('fs');
 const path = require('path');
-const createRouter = require('./routes');
-const controller = require('./controller');
-const generateDocumentation = require('./docs');
+
+import createRouter from './routes';
+import { queryCondition } from './controller';
+import generateDocumentation from './docs';
 
 const app = express();
 
@@ -59,5 +60,10 @@ const start = ({
 
 module.exports = { 
   start,
+<<<<<<< HEAD:index.js
   controllerQueryCondition: controller.queryCondition
 };
+=======
+  controllerQueryCondition: queryCondition
+};
+>>>>>>> master:src/index.js

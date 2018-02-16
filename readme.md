@@ -1,14 +1,14 @@
 # Mokker
-Mokker is a simple express REST API mock server, which also provides few methods to make your data emulating easier.
+[
+    ![npm version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=js&type=6&v=0.1.1&x2=0)
+](https://www.npmjs.com/package/mokker)
 
-## Features
-- GET conditioning
-- Auto-generation of documentation
+Mokker is a simple express RESTful API mock server, which also provides few methods to make your data emulating easier.
 
-## Instalation
+## Installation
 ```
-npm i --D mokker
-yarn add -D mokker
+npm install --save-dev mokker
+yarn add --dev mokker
 ```
 
 ## Dependencies
@@ -16,14 +16,12 @@ yarn add -D mokker
 - express
 - morgan
 - query-string
-– react-dev-utils
-– json2md
-– fs
+- react-dev-utils
 
 ## Usage
 
 ```
-// index.js
+// server.js
 const mokker = require('mokker');
 
 const routes = [{
@@ -36,116 +34,42 @@ mokker.start({ routes });
 // done 😍
 ```
 
-`$ nodemon index.js`
+`$ node server.js`
 
 ## API
 
-### .start(object)
-Start the server
+### `.start({ routes, defaultPort })`
 
-#### defaultPort
-Type: `number`\
-Default: `3000`\
-Set the port number where the API will be accessible.
+Run the server
 
-#### docs
-Type: `object`\
-Default: `null`\
-Set props to generate documentation
+- `routes: [{ method, url, json, controller }]` – router settings
+  - `method: string` – the request [method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
+  - `url: string` – the endpoint url
+  - `json: object` – the response JSON object of the request
+  - `controller: (data, req, res) => object` – the custom controller
+    - `data: { body, params, query }`
+      - `body: object` – the body of the request
+      - `params: object` – [route parameters](http://expressjs.com/en/guide/routing.html#route-parameters) `/api/:id`
+      - `query: object` – object containing a property for each [query parameter](http://expressjs.com/en/api.html#req.query) `/api?x=1`
+    - `req: object` – [the request Exress object](http://www.murvinlai.com/req-and-res-in-nodejs.html)
+    - `res: object` – [the response Exress object](http://www.murvinlai.com/req-and-res-in-nodejs.html)
 
-##### url
-Type: `string`\
-Default: `path.resolve(process.cwd(), 'rest-docs.md')`\
-Set global path where to save the documentation
+## `.controllerQueryCondition({ req, key, reject, resolvers }) => object`
 
-##### description
-Type: `string`\
-Default: `'Rest API documentation'`\
-The title of the documentation
+The custom controller suppots conditions for query parameters. This controller has to be set inside a controller method.
 
-#### routes
-Type: `array`\
-Default: `[]`\
-Set endpoints and how they should response to a client request.
-
-##### method: string
-A route method is derived from one of the HTTP methods.
-
-##### description: string
-Default: ''\
-Set the description of the route in the documentation
-
-##### url: string
-A route path, define the endpoints at which requests can be made. Supports query parametres.
-
-##### controller: function
-A request method, how the endpoints should respond to the request. The same controller as in Express Routing.
-```
-const controller = (req, res) => {
-    // params – params in query string /api/:id
-    // query - vars in query string /api?x=1
-    // body – body of the request
-
-    const { params, query, body } = req;
-    body.id = params.id;
-    res.json(body); // send body as JSON
-};
-```
-
-##### json: object
-static JSON, which will be returned.
-
-### .controllerQueryCondition(object)
-Create the controller with query string conditions.
-
-```
-const server = require('./mock');
-
-const controller = (req, res) => {
-    server.controllerQueryCondition({
-        req,
-        key: '@x',
-        reject: () => res.json({ 'message': 'reject' }), // invoked if rejects the condition
-        resolvers: [
-            {
-                value: 1,
-                resolve: () => res.json({ 'value': 1 }) // invoked if @x = 1
-            },
-            {
-                value: 2,
-                resolve: () => res.json({ 'value': 2 }) // invoked if @x = 2
-            }
-        ]
-    });
-};
-
-```
-
-#### req: object
-Type: `object`\
-Required\
-Taken from the arguments
-
-#### key: string
-The query string key
-
-#### reject: function
-The controller if rejects the condition
-
-#### resolvers: array
-The array of objects with value and resolve function
-
-##### value: string
-The query string value
-
-##### resolve: function
-The controller is fired if key and value are equal to query string
+- `req: object` – [the request Exress object](http://www.murvinlai.com/req-and-res-in-nodejs.html)
+- `key: string` – a key of a value from the query parameters
+- `reject: object` – the response if the value is not matched to the resolvers values
+- `resolvers: [{ value, resolver }]` – the list of the resolvers based on the condition
+  - `value: string | number` – the matched value of the key
+  - `resolve: object` – the response if the value is matched
 
 ## Examples
 ### Simple GET request
 ```
-// index.js
-const server = require('mokker');
+// server.js
+const mokker = require('mokker');
 
 const routes = [{
     method: 'get',
@@ -153,31 +77,31 @@ const routes = [{
     json: { is: 'done' }
 }];
 
-server.start({ routes });
+mokker.start({ routes });
 ```
 
 ### GET request with query string conditions
 ```
-// index.js
-// if host url has ?@x=1 it will get { 'value': 1 }
-// if host url has ?@x=2 it will get { 'value': 2 }
-// if host url has ?@x=3 it will get { 'message': 'reject' }
+// sever.js
+// if the host url has ?x=1 it will get { 'value': 1 }
+// if the host url has ?x=2 it will get { 'value': 2 }
+// if the host url has ?x=3 it will get { 'message': 'reject' }
 
-const server = require('mokker');
+const mokker = require('mokker');
 
-const controller = (req, res) => {
-    server.controllerQueryCondition({
+const controller = (data, req) => {
+    return mokker.controllerQueryCondition({
         req,
-        key: '@x',
-        reject: () => res.json({ 'message': 'reject' }),
+        key: 'x',
+        reject: { 'message': 'reject' },
         resolvers: [
             {
                 value: 1,
-                resolve: () => res.json({ 'value': 1 })
+                resolve: { 'value': 1 }
             },
             {
                 value: 2,
-                resolve: () => res.json({ 'value': 2 })
+                resolve: { 'value': 2 }
             }
         ]
     });
@@ -189,18 +113,19 @@ const routes = [{
     controller
 }];
 
-server.start({ routes });
+mokker.start({ routes });
 ```
 ### Simple POST request
 ```
-// index.js
+// server.js
 
-const server = require('mokker');
+const mokker = require('mokker');
 
-const controller = (req, res) => {
-    const { body } = req;
-    body.id = +new Date;
-    res.json(body);
+const controller = (data) => {
+    const { body } = data;
+    const newBody = Object.assign({}, body);
+    newBody.id = +new Date;
+    return newBody;
 };
 
 const routes = [{
@@ -209,9 +134,9 @@ const routes = [{
     controller
 }];
 
-server.start({ routes });
+mokker.start({ routes });
 ```
 
 
 ## License
-MIT
+This project is licensed under [MIT License](https://github.com/fidelman/mokker/blob/master/LICENSE.md). See the license file for more details.

@@ -1,49 +1,40 @@
 const path = require('path');
-const server = require('../index');
+const server = require('../public/index');
 
-const controllerGet = (req, res) => {
-    server.controllerQueryCondition({
+const controllerQueryCondition = (data, req) => {
+    return server.controllerQueryCondition({
         req,
         key: '@x',
-        reject: () => res.json({ message: 'reject' }),
+        reject: { message: 'reject' },
         resolvers: [
             {
                 value: 1,
-                resolve: () => res.json({ value: 1 })
+                resolve: { value: 1 }
             },
             {
                 value: 2,
-                resolve: () => res.json({ value: 2 })
+                resolve: { value: 2 }
             }
         ]
     });
 };
 
-const controllerPost = (req, res) => {
-    const { body } = req;
-    res.send(body);
-};
+const controllerGet = () => ({ 'simple-json': true });
+
+const controllerPost = data => data.body;
 
 const routes = [
     {
         description: 'Test get condition',
         method: 'get',
         url: '/test/condition',
-        controller: controllerGet
+        controller: controllerQueryCondition
     },
     {
         description: 'Test get',
         method: 'get',
         url: '/test/get',
-        json: { 
-            x: 1,
-            y: 'Hi',
-            z: [1, 2, 3],
-            h: {
-                x: 1,
-                y: 2
-            }
-        }
+        json: controllerGet
     },
     {
         description: 'Test post',
@@ -52,6 +43,7 @@ const routes = [
         controller: controllerPost
     }
 ];
+
 server.start({ 
     routes,
     docs: {
