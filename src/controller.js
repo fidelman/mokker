@@ -1,6 +1,6 @@
 const queryString = require('query-string');
 
-const queryCondition = ({
+export const queryCondition = ({
     req,
     key,
     reject,
@@ -16,7 +16,7 @@ const queryCondition = ({
     return matchedResolver ? matchedResolver.resolve : reject;
 };
 
-const mainController = (customContoller) => {
+export const mainController = (customContoller) => {
     return (req, res) => {
         const typeofCustomController = typeof customContoller;
         let response = {};
@@ -33,9 +33,4 @@ const mainController = (customContoller) => {
         
         res.json(response);
     }
-};
-
-module.exports = {
-    queryCondition,
-    mainController
 };

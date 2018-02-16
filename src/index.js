@@ -1,18 +1,12 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-import morgan from 'morgan';
-import { choosePort } from 'react-dev-utils/WebpackDevServerUtils';
-import webpack from "webpack";
-import webpackDevMiddleware from "webpack-dev-middleware";
-import webpackHotMiddleware from "webpack-hot-middleware";
-import * as config from "./webpack.dev.config.js";
+const bodyParser = require('body-parser');
+const express = require('express');
+const morgan = require('morgan');
+const { choosePort } = require('react-dev-utils/WebpackDevServerUtils');
+
 import createRouter from './routes';
-import controller from './controller';
+import { queryCondition } from './controller';
 
 const app = express();
-const isDevelopment = process.env.NODE_ENV !== "production";
-const DIST_DIR = path.join(__dirname, "dist");
-const compiler = webpack(config);
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -30,16 +24,6 @@ app.use((req, res, next) => {
   }
 });
 
-if (isDevelopment) {
-  app.use(webpackDevMiddleware(compiler, {
-		publicPath: config.output.publicPath
-	}));
-
-  app.use(webpackHotMiddleware(compiler));
-} else {
-  app.use(express.static(DIST_DIR));
-}
-
 const start = ({
   routes = [],
   defaultPort = 3000
@@ -55,5 +39,5 @@ const start = ({
 
 module.exports = { 
   start,
-  controllerQueryCondition: controller.queryCondition
+  controllerQueryCondition: queryCondition
 };

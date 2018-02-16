@@ -12,12 +12,13 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "morgan": "^1.9.0",
-    "query-string": "^5.0.1",
     "react-dev-utils": "^4.2.1"
   },
   "scripts": {
-    "start": "cd test/ && nodemon index.js",
-    "test": "cd test/ && mocha test.js"
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "dev": "npm-run-all --parallel start watch",
+    "start": "cd test/ && nodemon index.js"
   },
   "keywords": [
     "express",
@@ -38,9 +39,18 @@
   },
   "homepage": "https://github.com/fidelman/mokker",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "mocha": "^4.0.1",
+    "query-string": "^5.1.0",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.0.3",
+    "rollup-plugin-uglify": "^3.0.0",
     "should": "^13.1.3"
   }
 }

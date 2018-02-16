@@ -1,4 +1,4 @@
-const server = require('../index');
+const server = require('../public/index');
 
 const controllerQueryCondition = (data, req) => {
     return server.controllerQueryCondition({

@@ -1,5 +1,5 @@
 const Router = require('express').Router();
-const mainController = require('./controller').mainController;
+import { mainController } from './controller';
 
 Router.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -7,7 +7,7 @@ Router.use((req, res, next) => {
     next();
 });
 
-const createRouter = (routes) => {
+export default (routes) => {
     routes.forEach((route) => {
         const formatedMethod = route.method.toLowerCase();
 
@@ -24,5 +24,3 @@ const createRouter = (routes) => {
 
     return Router;
 };
-
-module.exports = createRouter;
