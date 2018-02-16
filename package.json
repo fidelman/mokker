@@ -1,8 +1,9 @@
 {
   "name": "mokker",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Simple Rest API mock server",
-  "main": "index.js",
+  "module": "src/index.js",
+  "main": "public/index.js",
   "author": {
     "name": "Andrei Fidelman",
     "email": "fidelmanlife@gmail.com"
@@ -18,7 +19,8 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "dev": "npm-run-all --parallel start watch",
-    "start": "cd test/ && nodemon index.js"
+    "start": "cd test/ && nodemon index.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "express",

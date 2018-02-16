@@ -20,7 +20,7 @@ export default {
         commonjs({
             exclude: 'node_modules/**'
         }), // converts date-fns to ES modules
-        // production && uglify(), // minify, but only in production
+        production && uglify(), // minify, but only in production
         json(),
         babel({
             exclude: 'node_modules/**'
