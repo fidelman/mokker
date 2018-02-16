@@ -8,7 +8,7 @@ Mokker is a simple express RESTful API mock server, which also provides few meth
 ## Instalation
 ```
 npm install --save-dev mokker
-yarn add --save-dev mokker
+yarn add --dev mokker
 ```
 
 ## Dependencies
