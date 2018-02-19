@@ -1,72 +1,74 @@
 const server = require('../public/index');
 
-const controllerQueryCondition = (data, req) => {
-    return server.controllerQueryCondition({
-        req,
-        key: '@x',
-        reject: { message: 'reject' },
-        resolvers: [
-            {
-                value: 1,
-                resolve: { value: 1 }
-            },
-            {
-                value: 2,
-                resolve: { value: 2 }
-            }
-        ]
-    });
+const contollerGetAdvanced = (data) => {
+  const { query: { x } } = data;
+
+  if (x === '1') {
+    return { value: 1 };
+  } else if (x === '2') {
+    return { value: '2' };
+  }
+
+  return { reject: true };
 };
 
 const controllerGet = {
-    'simple-json': true,
-    'obj': {
-        'hi': '1',
-        'hello': {
-            '1': 2
-        }
+  'simple-json': true,
+  obj: {
+    hi: '1',
+    hello: {
+      1: 2
     }
+  }
 };
 
-const controllerPost = data => {
-    const { body, params } = data;
-    body.time = +new Date;
-    body.id = params.id;
-    return body;
+const controllerPost = (data) => {
+  const { body, params, query } = data;
+  body.time = +new Date();
+  body.param1 = params.param1;
+  body.param2 = params.param2;
+  body.query1 = query.query1;
+  body.query2 = query.query2;
+  return body;
 };
 
 const routes = [
-    {
-        method: 'get',
-        url: '/test/condition',
-        controller: controllerQueryCondition
+  {
+    docs: {
+      title: 'Test get advanced',
+      description: 'Merged returns',
+      fileName: 'advanced-get'
     },
-    {
-        docs: {
-            title: 'Test get',
-            description: '',
-            fileName: 'simple-get'
-        },
-        method: 'get',
-        url: '/test/get',
-        json: controllerGet
+    method: 'get',
+    url: '/test/condition',
+    controller: contollerGetAdvanced
+  },
+  {
+    docs: {
+      title: 'Test get',
+      description: '',
+      fileName: 'simple-get'
     },
-    {
-        docs: {
-            title: 'Test post',
-            description: '',
-            fileName: 'simple-post',
-            parameters: {
-                name: '',
-                surname: ''
-            }
-        },
-        method: 'post',
-        url: '/test/post/:id',
-        controller: controllerPost
-    }
+    method: 'get',
+    url: '/test/get',
+    json: controllerGet
+  },
+  {
+    docs: {
+      title: 'Test post',
+      description: '',
+      fileName: 'simple-post',
+      parameters: {
+        name: '',
+        surname: ''
+      }
+    },
+    method: 'post',
+    url: '/test/post/:param1/:param2?query1=&query2=',
+    controller: controllerPost
+  }
 ];
 
-server.start({ 
-    routes
+server.start({
+  routes
 });
