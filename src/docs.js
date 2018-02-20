@@ -1,96 +1,232 @@
-const generateTab = number => new Array(number).join('  ');
-
-function docArr(array, result, tabsArg) {
-  const value = array[0];
-  let tabs = tabsArg;
-
-  tabs += 1;
-  const tabsString = generateTab(tabs);
-
-  if (Array.isArray(value)) {
-    result.content.push(`${tabsString}[`);
-    docArr(value, result, tabs);
-  } else if (typeof value === 'object') {
-    result.content.push(`${tabsString}{`);
-    docObj(value, result, tabs); // eslint-disable-line no-use-before-define
-  } else {
-    result.content.push(`${tabsString}${typeof value},`);
-  }
-
-  result.content.push(`${generateTab(tabs - 1)}]`);
-}
-
-function docObj(obj, result, tabsArg) {
-  let tabs = tabsArg;
-  tabs += 1;
-  const tabsString = generateTab(tabs);
-
+function parseObject(obj) {
+  const parsedObject = {};
   Object.keys(obj).forEach((key) => {
     const value = obj[key];
+    let type = typeof value;
 
     if (Array.isArray(value)) {
-      result.content.push(`${tabsString}"${key}": [`);
-      docArr(value, result, tabs);
-    } else if (typeof value === 'object') {
-      result.content.push(`${tabsString}"${key}": {`);
-      docObj(value, result, tabs);
+      type = parseArray(value); // eslint-disable-line
+    } else if (value === null) {
+      type = 'null';
+    } else if (type === 'object') {
+      type = parseObject(value);
+    }
+
+    parsedObject[key] = type;
+  });
+
+  return parsedObject;
+}
+
+function parseArray(arr) {
+  let parsedArray;
+  const firstItem = arr[0];
+
+  if (!firstItem) {
+    parsedArray = '[]';
+  } else if (Array.isArray(firstItem)) {
+    parsedArray = `${parseArray(firstItem)}[]`;
+  } else if (typeof firstItem === 'object') {
+    parsedArray = parseObject(firstItem);
+  } else {
+    parsedArray = `${typeof firstItem}[]`;
+  }
+
+  return parsedArray;
+}
+
+const isPropMandatory = (types, matches, possibleMatches) => {
+  let isMandatory = false;
+
+  if (types.includes('null') || types.includes('undefined')) {
+    isMandatory = false;
+  } else if (matches === possibleMatches) {
+    isMandatory = true;
+  }
+
+  return isMandatory;
+};
+
+const getMandatoryFlag = ({
+  types,
+  matches,
+  possibleMatches,
+  flagIfYes,
+  flagIfNo
+}) => (isPropMandatory(types, matches, possibleMatches) ? flagIfYes : flagIfNo);
+
+const findTypesObjects = types => types.filter(type => typeof type === 'object');
+const findTypesNoObjects = types => types.filter(type => typeof type !== 'object');
+
+const generateTypesWithMergedObjects = (types) => {
+  const typesObjects = findTypesObjects(types);
+  let typesWithMergedObjects = types;
+
+  if (typesObjects.length > 1) {
+    const merged = Object.assign({}, ...typesObjects);
+
+    const JSONFromTernary = getJSONFromTernary({ // eslint-disable-line
+      objs: typesObjects,
+      merged
+    });
+
+    typesWithMergedObjects = [].concat(findTypesNoObjects(types), JSONFromTernary);
+  }
+
+  return typesWithMergedObjects;
+};
+
+const generateJSONValue = (types) => {
+  let JSONValue = '';
+
+  const typesWithMergedObject = generateTypesWithMergedObjects(types);
+
+  const typesWithoutNullAndUndef = typesWithMergedObject.filter(type => type !== 'undefined' && type !== 'null');
+
+  typesWithoutNullAndUndef.forEach((item, index) => {
+    if (typeof item === 'object') {
+      JSONValue += `${JSON.stringify(item, null, 2)}`;
     } else {
-      result.content.push(`${tabsString}"${key}": ${typeof value},`);
+      JSONValue += `${item}`;
+    }
+
+    if (index < typesWithoutNullAndUndef.length - 1) JSONValue += ' | ';
+  });
+
+  return JSONValue;
+};
+
+const parseStringifiedObject = (stringifiedObject) => {
+  const parsedObject = {};
+  Object.keys(stringifiedObject).forEach((key) => {
+    const value = stringifiedObject[key];
+    const type = typeof value;
+
+    if (type === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed === 'object') {
+          parsedObject[key] = parseStringifiedObject(parsed);
+        } else {
+          parsedObject[key] = value;
+        }
+      } catch (e) {
+        parsedObject[key] = value;
+      }
+    } else {
+      parsedObject[key] = value;
     }
   });
 
-  result.content.push(`${generateTab(tabs - 1)}}`);
+  return parsedObject;
+};
+
+function getJSONFromTernary(ternaryObject) {
+  const { merged, objs } = ternaryObject;
+  const mergedKeys = Object.keys(merged);
+
+  const stringifiedObject = {};
+
+  mergedKeys.forEach((key) => {
+    let matches = 0;
+    const types = [];
+
+    objs.forEach((obj) => {
+      if (key in obj) {
+        const value = obj[key];
+        matches += 1;
+        let type = typeof value;
+
+        if (Array.isArray(value)) {
+          type = parseArray(value);
+        } else if (value === null) {
+          type = 'null';
+        } else if (typeof value === 'object') {
+          type = parseObject(value);
+        }
+
+        if (!types.includes(type)) types.push(type);
+      }
+    });
+
+    const mandatoryFlag = getMandatoryFlag({
+      types,
+      matches,
+      possibleMatches: objs.length,
+      flagIfYes: '',
+      flagIfNo: '?'
+    });
+    const JSONKey = `${mandatoryFlag}${key}`;
+    const JSONValue = generateJSONValue(types);
+
+    stringifiedObject[JSONKey] = JSONValue;
+  });
+
+  const JSONFromTernary = parseStringifiedObject(stringifiedObject);
+
+  return JSONFromTernary;
 }
 
 const getParamsFromUrl = (url) => {
-  const paramsObj = {};
+  const paramsFromUrl = {};
   url
     .split('?')[0]
     .split('/')
     .filter(item => item.includes(':'))
     .forEach((param) => {
-      paramsObj[param.replace(':', '')] = '';
+      paramsFromUrl[param.replace(':', '')] = '';
     }); // all route params are strings
 
-  return paramsObj;
+  return paramsFromUrl;
 };
 
-const getJSONDocs = (stuff, body, query, url) => {
-  const result = {
+const getDataFromArray = (array) => {
+  if (!Array.isArray(array)) return {};
+  const data = {};
+  array.forEach((item) => {
+    data[item] = '';
+  });
+  return data;
+};
+
+const generateDocs = (response, bodyArray, queryArray, url) => {
+  const docs = {
     language: 'js',
-    content: ['{']
+    content: []
   };
 
-  const tabs = 1;
+  let json;
 
-  if (typeof stuff === 'object') {
-    docObj(stuff, result, tabs);
+  if (typeof response === 'object') {
+    json = parseObject(response);
   } else {
-    const obj = stuff({
-      body,
+    const responseJSON = response({
+      body: getDataFromArray(bodyArray),
       params: getParamsFromUrl(url),
-      query
+      query: getDataFromArray(queryArray)
     });
 
-    docObj(obj, result, tabs);
+    if ('@m_docs' in responseJSON) {
+      json = getJSONFromTernary(responseJSON['@m_docs']);
+    } else {
+      json = parseObject(responseJSON);
+    }
   }
 
-  return result;
+  const string = JSON.stringify(json, null, 2).replace(/\\"/g, "'").replace(/\\n/g, `
+  `);
+  const array = string.split('\n');
+  array.forEach(item => docs.content.push(item));
+
+  return docs;
 };
 
 const getFileName = fileName => `${fileName.toLocaleLowerCase().replace(new RegExp(' ', 'g'), '-')}.md`;
 
-export const getObjForCnd = (iftrue, iffalse) => {
-  const result = [];
-  if (typeof iftrue === 'object') result.push(iftrue);
-  if (typeof iffalse === 'object') result.push(iffalse);
-  return result;
-};
-
 export default (route) => {
   const { docs } = route;
 
-  const file = [
+  const fileContent = [
     { h1: docs.title },
 
     { blockquote: docs.description },
@@ -107,23 +243,35 @@ export default (route) => {
     }
   ];
 
-  if (docs.parameters) {
-    file.push({ h2: 'Parameters' });
-    file.push({ code: getJSONDocs(docs.parameters) });
+  if (docs.body) {
+    fileContent.push({
+      h2: 'Parameters'
+    });
+    fileContent.push({
+      code: generateDocs(getDataFromArray(docs.body))
+    });
   }
 
   if (route.json) {
-    file.push({ h2: 'Response' });
-    file.push({ code: getJSONDocs(route.json) });
+    fileContent.push({
+      h2: 'Response'
+    });
+    fileContent.push({
+      code: generateDocs(route.json)
+    });
   } else if (route.controller) {
-    file.push({ h2: 'Response' });
-    file.push({ code: getJSONDocs(route.controller, docs.parameters, docs.query, route.url) });
+    fileContent.push({
+      h2: 'Response'
+    });
+    fileContent.push({
+      code: generateDocs(route.controller, docs.body, docs.query, route.url)
+    });
   }
 
   const fileName = getFileName(docs.fileName);
 
   return {
     fileName,
-    file
+    fileContent
   };
 };

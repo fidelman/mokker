@@ -43,7 +43,7 @@ const start = ({
     if (route.docs) {
       const documentation = generateDocumentation(route);
 
-      fs.writeFile(`${docsUrl}/${documentation.fileName}`, json2md(documentation.file), (err) => {
+      fs.writeFile(`${docsUrl}/${documentation.fileName}`, json2md(documentation.fileContent), (err) => {
         if (err) {
           console.log(err.red); // eslint-disable-line no-console
           return false;
