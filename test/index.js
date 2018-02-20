@@ -2,14 +2,19 @@ const server = require('../public/index');
 
 const contollerGetAdvanced = (data) => {
   const { query: { x } } = data;
+  const { ternary } = server;
 
-  if (x === '1') {
-    return { value: 1 };
-  } else if (x === '2') {
-    return { value: '2' };
-  }
+  const result = ternary({
+    condition: x === '1',
+    iftrue: { value: 1 },
+    iffalse: ternary({
+      condition: x === '2',
+      iftrue: { value: 2 },
+      iffalse: { value: 3 }
+    })
+  });
 
-  return { reject: true };
+  return result;
 };
 
 const controllerGet = {
@@ -23,12 +28,7 @@ const controllerGet = {
 };
 
 const controllerPost = (data) => {
-  const { body, params, query } = data;
-  body.time = +new Date();
-  body.param1 = params.param1;
-  body.param2 = params.param2;
-  body.query1 = query.query1;
-  body.query2 = query.query2;
+  const { body } = data;
   return body;
 };
 
@@ -61,10 +61,13 @@ const routes = [
       parameters: {
         name: '',
         surname: ''
+      },
+      query: {
+        x: ''
       }
     },
     method: 'post',
-    url: '/test/post/:param1/:param2?query1=&query2=',
+    url: '/test/post',
     controller: controllerPost
   }
 ];

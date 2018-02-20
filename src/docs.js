@@ -1,5 +1,3 @@
-const queryString = require('query-string');
-
 const generateTab = number => new Array(number).join('  ');
 
 function docArr(array, result, tabsArg) {
@@ -57,17 +55,7 @@ const getParamsFromUrl = (url) => {
   return paramsObj;
 };
 
-const getQueryFromUrl = (url) => {
-  const parsedQuery = queryString.parse(url.slice(url.indexOf('?')));
-  const queryObj = {};
-  Object.keys(parsedQuery).forEach((query) => {
-    queryObj[query] = ''; // all query params are strings
-  });
-
-  return queryObj;
-};
-
-const getJSONDocs = (stuff, body, url) => {
+const getJSONDocs = (stuff, body, query, url) => {
   const result = {
     language: 'js',
     content: ['{']
@@ -81,7 +69,7 @@ const getJSONDocs = (stuff, body, url) => {
     const obj = stuff({
       body,
       params: getParamsFromUrl(url),
-      query: getQueryFromUrl(url)
+      query
     });
 
     docObj(obj, result, tabs);
@@ -129,7 +117,7 @@ export default (route) => {
     file.push({ code: getJSONDocs(route.json) });
   } else if (route.controller) {
     file.push({ h2: 'Response' });
-    file.push({ code: getJSONDocs(route.controller, docs.parameters, route.url) });
+    file.push({ code: getJSONDocs(route.controller, docs.parameters, docs.query, route.url) });
   }
 
   const fileName = getFileName(docs.fileName);

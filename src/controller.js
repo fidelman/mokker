@@ -1,23 +1,49 @@
-import { getObjForCnd } from './docs';
+const transformToTernary = (obj) => {
+  let ternaryObject = obj;
 
-export const cnd = ({ condition, iftrue, iffalse }) => {
-  let response;
-  const docs = getObjForCnd(iftrue, iffalse);
-  Object.defineProperty(response, 'docs', { value: docs });
+  if (!('@m_result' in obj)) {
+    ternaryObject = {
+      '@m_result': obj,
+      '@m_docs': {
+        merged: {},
+        objs: []
+      }
+    };
+  }
 
-  // if (condition) {
-  //     response = {
-  //         ...response,
-  //         ...(typeof iftrue === 'object' ? iftrue : iftrue())
-  //     }
-  // }
+  return ternaryObject;
+};
 
-  // response = {
-  //     ...response,
-  //     ...(typeof iffalse === 'object' ? iffalse : iffalse())
-  // }
+const getObj = (iftrueTernary, iffalseTernary) => {
+  let result;
+  if (!iftrueTernary['@m_docs'].objs.length && !iffalseTernary['@m_docs'].objs.length) {
+    result = [].concat(iftrueTernary['@m_result'], iffalseTernary['@m_result']);
+  } else if (!iftrueTernary['@m_docs'].objs.length) {
+    result = [].concat(iftrueTernary['@m_result'], iffalseTernary['@m_docs'].objs);
+  } else if (!iffalseTernary['@m_docs'].objs.length) {
+    result = [].concat(iffalseTernary['@m_result'], iftrueTernary['@m_docs'].objs);
+  } else {
+    result = [].concat(iftrueTernary['@m_docs'].objs, iffalseTernary['@m_docs'].objs);
+  }
 
-  return response;
+  return result;
+};
+
+export const ternary = ({ condition, iftrue, iffalse }) => {
+  const iftrueTernary = transformToTernary(iftrue);
+  const iffalseTernary = transformToTernary(iffalse);
+
+  const result = condition ? iftrueTernary['@m_result'] : iffalseTernary['@m_result'];
+  const merged = Object.assign({}, iftrueTernary['@m_result'], iffalseTernary['@m_result'], iftrueTernary['@m_docs'].merged, iffalseTernary['@m_docs'].merged);
+  const objs = getObj(iftrueTernary, iffalseTernary);
+
+  return {
+    '@m_result': result,
+    '@m_docs': {
+      merged,
+      objs
+    }
+  };
 };
 
 export default customContoller => (req, res) => {
@@ -27,7 +53,8 @@ export default customContoller => (req, res) => {
   if (typeofCustomController === 'function') {
     const { body, params, query } = req;
     const data = { body, params, query };
-    response = customContoller(data, req, res);
+    const result = customContoller(data, req, res);
+    response = '@m_result' in result ? result['@m_result'] : result;
   } else if (typeofCustomController === 'object' && !Array.isArray(customContoller)) {
     response = customContoller;
   } else {

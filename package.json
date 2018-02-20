@@ -16,14 +16,14 @@
     "fs": "0.0.1-security",
     "json2md": "^1.5.10",
     "morgan": "^1.9.0",
-    "react-dev-utils": "^4.2.1",
-    "query-string": "^5.1.0"
+    "react-dev-utils": "^4.2.1"
   },
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "dev": "npm-run-all --parallel start watch",
     "start": "cd test/ && nodemon index.js",
+    "test": "cd test/ && mocha test.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -48,6 +48,7 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",

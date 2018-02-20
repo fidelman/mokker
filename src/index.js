@@ -1,5 +1,5 @@
 import createRouter from './routes';
-import { cnd } from './controller';
+import { ternary } from './controller';
 import generateDocumentation from './docs';
 
 const bodyParser = require('body-parser');
@@ -57,5 +57,5 @@ const start = ({
 
 module.exports = {
   start,
-  cnd
+  ternary
 };

@@ -19,15 +19,15 @@ export default {
     format: 'cjs'
   },
   plugins: [
+    eslint(eslintConfig),
+    babel({
+      exclude: 'node_modules/**'
+    }),
     resolve(), // tells Rollup how to find date-fns in node_modules
     commonjs({
       exclude: 'node_modules/**'
     }), // converts date-fns to ES modules
-    eslint(eslintConfig),
     production && uglify(), // minify, but only in production
-    json(),
-    babel({
-      exclude: 'node_modules/**'
-    })
+    json()
   ]
 };
