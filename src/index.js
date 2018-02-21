@@ -48,7 +48,7 @@ const start = ({
           console.log(err.red); // eslint-disable-line no-console
           return false;
         }
-        console.log(`📄 The docs has been updated ${docsUrl}/${documentation.fileName}`.green); // eslint-disable-line no-console
+        console.log(`📄 ${docsUrl}/${documentation.fileName}`); // eslint-disable-line no-console
         return true;
       });
     }
@@ -59,3 +59,4 @@ module.exports = {
   start,
   ternary
 };
+
