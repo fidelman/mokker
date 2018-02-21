@@ -101,7 +101,7 @@ const routes = [{
     method: 'post',
     url: '/api/:id',
     controller,
-        docs: {
+    docs: {
         title: 'Post Request',
         description: 'The example of a post request',
         fileName: 'post-request-docs',
@@ -111,7 +111,7 @@ const routes = [{
             name: '',
             age: 1
         }
-	}
+    }
 }];
 
 mokker.start({ routes });
@@ -298,28 +298,3 @@ GET
       }
     }
 ​```
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
