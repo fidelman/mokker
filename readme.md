@@ -40,22 +40,9 @@ mokker.start({ routes });
 
 ## Docs
 
-- [API]()
-- [Examples]()
+- [API](https://github.com/fidelman/mokker/blob/docs-generator/docs/api.md)
+- [Examples](https://github.com/fidelman/mokker/blob/docs-generator/docs/examples.md)
 
-
-
-    docs: {
-        title: 'Post Request',
-        description: 'The example of a post request',
-        fileName: 'post-request-docs',
-        query: ['date'],
-        hostQuery: ['token'],
-        body: {
-            name: '',
-            age: 1
-        }
-    }
 ## License
 
 This project is licensed under [MIT License](https://github.com/fidelman/mokker/blob/master/LICENSE.md). See the license file for more details.
