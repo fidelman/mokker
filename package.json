@@ -1,6 +1,6 @@
 {
   "name": "mokker",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Simple Rest API mock server",
   "module": "src/index.js",
   "main": "public/index.js",
@@ -11,8 +11,12 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "colors": "^1.1.2",
     "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "json2md": "^1.5.10",
     "morgan": "^1.9.0",
+    "query-string": "^5.1.0",
     "react-dev-utils": "^4.2.1"
   },
   "scripts": {
@@ -20,6 +24,7 @@
     "watch": "rollup -c -w",
     "dev": "npm-run-all --parallel start watch",
     "start": "cd test/ && nodemon index.js",
+    "test": "cd test/ && mocha test.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -42,14 +47,22 @@
   "homepage": "https://github.com/fidelman/mokker",
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
+    "eslint": "^4.18.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
     "mocha": "^4.0.1",
-    "query-string": "^5.1.0",
+    "path": "^0.12.7",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-eslint": "^4.0.0",
     "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.3",
     "rollup-plugin-uglify": "^3.0.0",
