@@ -28,7 +28,7 @@ Run the server
 
 ### `.ternary({ condition, iftrue, iffalse }) => object`
 
-The method to write a controller with conditions, if the documentation is **required**. [Example](https://github.com/fidelman/mokker/blob/docs-generator/docs/examples.md#ternary-conroller)
+The method to write a controller with conditions, if the documentation is **required**. [Example](https://github.com/fidelman/mokker/blob/master/docs/examples.md#ternary-conroller)
 
 - `condtition: bool`
 - `iftrue: object` – is returned when condition is true
