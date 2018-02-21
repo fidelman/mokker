@@ -208,7 +208,7 @@ const generateDocsFromArray = (array) => {
   return docs;
 };
 
-const generateDocsFromObject = (response, body, queryArray = [], url = '') => {
+const generateDocsFromObject = (response, body, hostQuery = [], queryArray = [], url = '') => {
   const docs = {
     language: 'js',
     content: []
@@ -222,7 +222,8 @@ const generateDocsFromObject = (response, body, queryArray = [], url = '') => {
     const responseJSON = response({
       body,
       params: getParamsFromUrl(url),
-      query: getDataFromArray(queryArray)
+      query: getDataFromArray(queryArray),
+      hostQuery: getDataFromArray(hostQuery)
     });
 
     if ('@m_docs' in responseJSON) {
@@ -259,6 +260,18 @@ export default (route) => {
     }
   ];
 
+  if (docs.hostQuery) {
+    fileContent.push({
+      h2: 'Host Query Parameters'
+    });
+    fileContent.push({
+      blockquote: 'For mock development'
+    });
+    fileContent.push({
+      code: generateDocsFromArray(docs.hostQuery)
+    });
+  }
+
   if (docs.query) {
     fileContent.push({
       h2: 'Query Parameters'
@@ -289,7 +302,7 @@ export default (route) => {
       h2: 'Response'
     });
     fileContent.push({
-      code: generateDocsFromObject(route.controller, docs.body, docs.query, route.url)
+      code: generateDocsFromObject(route.controller, docs.body, docs.hostQuery, docs.query, route.url)
     });
   }
 

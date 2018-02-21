@@ -1,8 +1,27 @@
 const server = require('../public/index');
 
+const { ternary } = server;
+
+const controllerGetHostQuery = (data) => {
+  const { hostQuery: { token } } = data;
+  return ternary({
+    condition: token,
+    iftrue: {
+      success: true,
+      payload: {
+        token
+      },
+      errorMessage: null
+    },
+    iffalse: {
+      success: false,
+      payload: null,
+      errorMessage: 'No token'
+    }
+  });
+};
 const contollerGetAdvanced = (data) => {
   const { query: { x } } = data;
-  const { ternary } = server;
 
   const result = ternary({
     condition: x === '1',
@@ -34,7 +53,6 @@ const contollerGetAdvanced = (data) => {
       }
     })
   });
-
   return result;
 };
 
@@ -64,7 +82,8 @@ const routes = [
       title: 'Test get advanced',
       description: 'Merged returns',
       fileName: 'advanced-get',
-      query: ['x']
+      query: ['x'],
+      hostQuery: ['z', 'y']
     },
     method: 'get',
     url: '/test/condition',
@@ -98,6 +117,17 @@ const routes = [
     method: 'post',
     url: '/test/post/:id',
     controller: controllerPost
+  },
+  {
+    docs: {
+      title: 'Test Host Query',
+      description: '',
+      fileName: 'host-query',
+      hostQuery: ['token']
+    },
+    method: 'get',
+    url: '/test/host-query',
+    controller: controllerGetHostQuery
   }
 ];
 server.start({

@@ -1,3 +1,5 @@
+const queryString = require('query-string');
+
 const transformToTernary = (obj) => {
   let ternaryObject = obj;
 
@@ -29,6 +31,21 @@ const getObj = (iftrueTernary, iffalseTernary) => {
   return result;
 };
 
+const getHostQuery = (req) => {
+  let hostQuery;
+  const host = req.headers.referer || req.url;
+  const index = host.indexOf('?');
+
+  if (hostQuery === -1) {
+    hostQuery = {};
+  } else {
+    const formatedHost = host.slice(index);
+    hostQuery = queryString.parse(formatedHost);
+  }
+
+  return hostQuery;
+};
+
 export const ternary = ({ condition, iftrue, iffalse }) => {
   const iftrueTernary = transformToTernary(iftrue);
   const iffalseTernary = transformToTernary(iffalse);
@@ -52,7 +69,16 @@ export default customContoller => (req, res) => {
 
   if (typeofCustomController === 'function') {
     const { body, params, query } = req;
-    const data = { body, params, query };
+
+    const hostQuery = getHostQuery(req);
+
+    const data = {
+      body,
+      params,
+      query,
+      hostQuery
+    };
+
     const result = customContoller(data, req, res);
     response = '@m_result' in result ? result['@m_result'] : result;
   } else if (typeofCustomController === 'object' && !Array.isArray(customContoller)) {
