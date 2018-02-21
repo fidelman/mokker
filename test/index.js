@@ -66,6 +66,19 @@ const controllerGet = {
   }
 };
 
+const controllerForDocs = (data) => {
+  const {
+    body, query, params, hostQuery
+  } = data;
+
+  const response = Object.assign({}, body);
+  response.id = params.id;
+  response.date = query.date;
+  response.token = hostQuery.token;
+
+  return response;
+};
+
 const controllerPost = (data) => {
   const { body, params, query } = data;
   return {
@@ -128,6 +141,22 @@ const routes = [
     method: 'get',
     url: '/test/host-query',
     controller: controllerGetHostQuery
+  },
+  {
+    method: 'post',
+    url: '/api/:id',
+    controller: controllerForDocs,
+    docs: {
+      title: 'Post Request',
+      description: 'The example of a post request',
+      fileName: 'post-request-docs',
+      query: ['date'],
+      hostQuery: ['token'],
+      body: {
+        name: '',
+        age: 1
+      }
+    }
   }
 ];
 server.start({

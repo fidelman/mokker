@@ -242,23 +242,36 @@ const getFileName = fileName => `${fileName.toLocaleLowerCase().replace(new RegE
 
 export default (route) => {
   const { docs } = route;
+  const fileContent = [];
 
-  const fileContent = [
-    { h1: docs.title },
+  fileContent.push({
+    h1: docs.title
+  });
 
-    { blockquote: docs.description },
+  if (docs.description) {
+    fileContent.push({
+      blockquote: docs.description
+    });
+  }
 
-    { h2: 'Method' },
-    { p: route.method.toLocaleUpperCase() },
+  fileContent.push({
+    h2: 'Method'
+  });
 
-    { h2: 'URL' },
-    {
-      code: {
-        language: 'js',
-        content: [route.url.split('?')[0]] // ignore query params
-      }
+  fileContent.push({
+    p: route.method.toLocaleUpperCase()
+  });
+
+  fileContent.push({
+    h2: 'URL'
+  });
+
+  fileContent.push({
+    code: {
+      language: 'js',
+      content: [route.url.split('?')[0]] // ignore query params
     }
-  ];
+  });
 
   if (docs.hostQuery) {
     fileContent.push({
