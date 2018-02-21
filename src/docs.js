@@ -181,7 +181,6 @@ const getParamsFromUrl = (url) => {
 };
 
 const getDataFromArray = (array) => {
-  if (!Array.isArray(array)) return {};
   const data = {};
   array.forEach((item) => {
     data[item] = '';
@@ -189,7 +188,27 @@ const getDataFromArray = (array) => {
   return data;
 };
 
-const generateDocs = (response, bodyArray, queryArray, url) => {
+const getArrayOfJSON = (json) => {
+  const string = JSON.stringify(json, null, 2).replace(/\\"/g, "'").replace(/\\n/g, `
+  `);
+
+  const array = string.split('\n');
+
+  return array;
+};
+
+const generateDocsFromArray = (array) => {
+  const docs = {
+    language: 'js',
+    content: []
+  };
+
+  getArrayOfJSON(array).forEach(item => docs.content.push(item));
+
+  return docs;
+};
+
+const generateDocsFromObject = (response, body, queryArray = [], url = '') => {
   const docs = {
     language: 'js',
     content: []
@@ -201,7 +220,7 @@ const generateDocs = (response, bodyArray, queryArray, url) => {
     json = parseObject(response);
   } else {
     const responseJSON = response({
-      body: getDataFromArray(bodyArray),
+      body,
       params: getParamsFromUrl(url),
       query: getDataFromArray(queryArray)
     });
@@ -213,10 +232,7 @@ const generateDocs = (response, bodyArray, queryArray, url) => {
     }
   }
 
-  const string = JSON.stringify(json, null, 2).replace(/\\"/g, "'").replace(/\\n/g, `
-  `);
-  const array = string.split('\n');
-  array.forEach(item => docs.content.push(item));
+  getArrayOfJSON(json).forEach(item => docs.content.push(item));
 
   return docs;
 };
@@ -243,12 +259,21 @@ export default (route) => {
     }
   ];
 
-  if (docs.body) {
+  if (docs.query) {
     fileContent.push({
-      h2: 'Parameters'
+      h2: 'Query Parameters'
     });
     fileContent.push({
-      code: generateDocs(getDataFromArray(docs.body))
+      code: generateDocsFromArray(docs.query)
+    });
+  }
+
+  if (docs.body) {
+    fileContent.push({
+      h2: 'Body'
+    });
+    fileContent.push({
+      code: generateDocsFromObject(docs.body)
     });
   }
 
@@ -257,14 +282,14 @@ export default (route) => {
       h2: 'Response'
     });
     fileContent.push({
-      code: generateDocs(route.json)
+      code: generateDocsFromObject(route.json)
     });
   } else if (route.controller) {
     fileContent.push({
       h2: 'Response'
     });
     fileContent.push({
-      code: generateDocs(route.controller, docs.body, docs.query, route.url)
+      code: generateDocsFromObject(route.controller, docs.body, docs.query, route.url)
     });
   }
 

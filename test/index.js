@@ -47,6 +47,7 @@ const controllerGet = {
     }
   }
 };
+
 const controllerPost = (data) => {
   const { body, params, query } = data;
   return {
@@ -63,9 +64,7 @@ const routes = [
       title: 'Test get advanced',
       description: 'Merged returns',
       fileName: 'advanced-get',
-      query: {
-        x: ''
-      }
+      query: ['x']
     },
     method: 'get',
     url: '/test/condition',
@@ -87,14 +86,20 @@ const routes = [
       description: '',
       fileName: 'simple-post',
       query: ['sort', 'date'],
-      body: ['name', 'surname']
+      body: {
+        name: '',
+        age: {
+          first: 1,
+          seconds: 2
+        }
+      }
     },
+
     method: 'post',
     url: '/test/post/:id',
     controller: controllerPost
   }
 ];
-
 server.start({
   routes
 });
