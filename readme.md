@@ -40,8 +40,8 @@ mokker.start({ routes });
 
 ## Docs
 
-- [API](https://github.com/fidelman/mokker/blob/docs-generator/docs/api.md)
-- [Examples](https://github.com/fidelman/mokker/blob/docs-generator/docs/examples.md)
+- [API](https://github.com/fidelman/mokker/blob/master/docs/api.md)
+- [Examples](https://github.com/fidelman/mokker/blob/master/docs/examples.md)
 
 ## License
 
