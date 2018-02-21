@@ -16,7 +16,7 @@ Run the server
       - `hostQuery: object` – object containing of query properties from a host or to an endpoint
     - `req: object` – [the request Exress object](http://www.murvinlai.com/req-and-res-in-nodejs.html)
     - `res: object` – [the response Exress object](http://www.murvinlai.com/req-and-res-in-nodejs.html)
-  - `docs: { title, description, fileName, query, body, hostQuery }` –
+  - `docs: { title, description, fileName, query, body, hostQuery }` – for initialisation the docs-generation algorithm
     - `title: string ` – **required**
     - `description: string`
     - `fileName: string = title `
@@ -28,7 +28,7 @@ Run the server
 
 ### `.ternary({ condition, iftrue, iffalse }) => object`
 
-The method to write a controller with conditions, if the documentation is **required**. [Example]()
+The method to write a controller with conditions, if the documentation is **required**. [Example](https://github.com/fidelman/mokker/blob/docs-generator/docs/examples.md#ternary-conroller)
 
 - `condtition: bool`
 - `iftrue: object` – is returned when condition is true
