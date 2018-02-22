@@ -135,7 +135,6 @@ const routes = [
     docs: {
       title: 'Test Host Query',
       description: '',
-      fileName: 'host-query',
       hostQuery: ['token']
     },
     method: 'get',

@@ -319,10 +319,11 @@ export default (route) => {
     });
   }
 
-  const fileName = getFileName(docs.fileName);
+  const fileName = getFileName(docs.fileName || docs.title);
 
   return {
     fileName,
     fileContent
   };
 };
+
