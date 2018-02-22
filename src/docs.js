@@ -315,11 +315,11 @@ export default (route) => {
       h2: 'Response'
     });
     fileContent.push({
-      code: generateDocsFromObject(route.controller, docs.body, docs.hostQuery, docs.query, route.url)
+      code: generateDocsFromObject(route.controller, docs.body, docs.hostQuery, docs.query, route.url) // eslint-disable-line
     });
   }
 
-  const fileName = getFileName(docs.fileName);
+  const fileName = getFileName(docs.fileName || docs.title);
 
   return {
     fileName,

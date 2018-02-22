@@ -28,6 +28,38 @@ app.use((req, res, next) => {
   }
 });
 
+const writeDocs = (docsUrl, createFiles) => {
+  fs.readdir(docsUrl, (err, files) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        console.log(`Cannot find the path: ${docsUrl}`.red); // eslint-disable-line no-console
+      } else {
+        throw err;
+      }
+    } else {
+      Object.keys(files).forEach((key) => {
+        const file = files[key];
+        fs.unlink(path.join(docsUrl, file), (e) => {
+          if (e) throw e;
+        });
+      });
+    }
+
+    createFiles();
+  });
+};
+
+const writeFiles = (url, fileContent) => {
+  fs.writeFile(url, json2md(fileContent), (err) => {
+    if (err) {
+      console.log(err.red); // eslint-disable-line no-console
+      return false;
+    }
+    console.log(`📄 ${url}`); // eslint-disable-line no-console
+    return true;
+  });
+};
+
 const start = ({
   routes = [],
   defaultPort = 3000,
@@ -39,19 +71,16 @@ const start = ({
       if (port == null) return;
       app.listen(port, () => console.log(`🚀 App started on port: ${port}`.green)); // eslint-disable-line no-console
     });
-  routes.forEach((route) => {
-    if (route.docs) {
-      const documentation = generateDocumentation(route);
 
-      fs.writeFile(`${docsUrl}/${documentation.fileName}`, json2md(documentation.fileContent), (err) => {
-        if (err) {
-          console.log(err.red); // eslint-disable-line no-console
-          return false;
-        }
-        console.log(`📄 ${docsUrl}/${documentation.fileName}`); // eslint-disable-line no-console
-        return true;
-      });
-    }
+  writeDocs(docsUrl, () => {
+    routes.forEach((route) => {
+      if (route.docs) {
+        const documentation = generateDocumentation(route);
+        const url = `${docsUrl}/${documentation.fileName}`;
+
+        writeFiles(url, documentation.fileContent);
+      }
+    });
   });
 };
 
@@ -59,4 +88,3 @@ module.exports = {
   start,
   ternary
 };
-
