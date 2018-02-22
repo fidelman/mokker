@@ -315,7 +315,7 @@ export default (route) => {
       h2: 'Response'
     });
     fileContent.push({
-      code: generateDocsFromObject(route.controller, docs.body, docs.hostQuery, docs.query, route.url)
+      code: generateDocsFromObject(route.controller, docs.body, docs.hostQuery, docs.query, route.url) // eslint-disable-line
     });
   }
 
@@ -326,4 +326,3 @@ export default (route) => {
     fileContent
   };
 };
-
