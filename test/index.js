@@ -8,13 +8,11 @@ const controllerGetHostQuery = (data) => {
     condition: token,
     iftrue: {
       success: true,
-      payload: {
-        token
-      },
+      payload: [{ id: 1 }, { id: 2 }],
       errorMessage: null
     },
     iffalse: {
-      success: false,
+      success: ['false'],
       payload: null,
       errorMessage: 'No token'
     }
@@ -91,52 +89,51 @@ const controllerPost = (data) => {
 
 const routes = [
   {
-    docs: {
-      title: 'Test get advanced',
-      description: 'Merged returns',
-      fileName: 'advanced-get',
-      query: ['x'],
-      hostQuery: ['z', 'y']
-    },
+    // docs: {
+    //   title: 'Test get advanced',
+    //   description: 'Merged returns',
+    //   fileName: 'advanced-get',
+    //   query: ['x'],
+    //   hostQuery: ['z', 'y']
+    // },
     method: 'get',
     url: '/test/condition',
     controller: contollerGetAdvanced
   },
   {
-    docs: {
-      title: 'Test get',
-      description: '',
-      fileName: 'simple-get'
-    },
+    // docs: {
+    //   title: 'Test get',
+    //   description: '',
+    //   fileName: 'simple-get'
+    // },
     method: 'get',
     url: '/test/get',
     json: controllerGet
   },
   {
-    docs: {
-      title: 'Test post',
-      description: '',
-      fileName: 'simple-post',
-      query: ['sort', 'date'],
-      body: {
-        name: '',
-        age: {
-          first: 1,
-          seconds: 2
-        }
-      }
-    },
-
+    // docs: {
+    //   title: 'Test post',
+    //   description: '',
+    //   fileName: 'simple-post',
+    //   query: ['sort', 'date'],
+    //   body: {
+    //     name: '',
+    //     age: {
+    //       first: 1,
+    //       seconds: 2
+    //     }
+    //   }
+    // },
     method: 'post',
     url: '/test/post/:id',
     controller: controllerPost
   },
   {
-    docs: {
-      title: 'Test Host Query',
-      description: '',
-      hostQuery: ['token']
-    },
+    // docs: {
+    //   title: 'Test Host Query',
+    //   description: '',
+    //   hostQuery: ['token']
+    // },
     method: 'get',
     url: '/test/host-query',
     controller: controllerGetHostQuery

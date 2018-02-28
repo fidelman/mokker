@@ -28,13 +28,23 @@ app.use((req, res, next) => {
   }
 });
 
-const writeDocs = (docsUrl, createFiles) => {
+const writeFiles = (url, fileContent) => {
+  fs.writeFile(url, json2md(fileContent), (err) => {
+    if (err) {
+      console.log(err.red); // eslint-disable-line no-console
+    } else {
+      console.log(`📄 ${url}`); // eslint-disable-line no-console
+    }
+  });
+};
+
+const clearDocsFolder = (docsUrl) => {
   fs.readdir(docsUrl, (err, files) => {
     if (err) {
       if (err.code === 'ENOENT') {
         console.log(`Cannot find the path: ${docsUrl}`.red); // eslint-disable-line no-console
       } else {
-        throw err;
+        console.log(err); // eslint-disable-line no-console
       }
     } else {
       Object.keys(files).forEach((key) => {
@@ -44,19 +54,23 @@ const writeDocs = (docsUrl, createFiles) => {
         });
       });
     }
-
-    createFiles();
   });
 };
 
-const writeFiles = (url, fileContent) => {
-  fs.writeFile(url, json2md(fileContent), (err) => {
-    if (err) {
-      console.log(err.red); // eslint-disable-line no-console
-      return false;
+const createDocs = (routes, docsUrl) => {
+  let docsFolderCleared = false;
+  routes.forEach((route) => {
+    if (route.docs) {
+      if (!docsFolderCleared) {
+        clearDocsFolder(docsUrl);
+        docsFolderCleared = true;
+      }
+
+      const documentation = generateDocumentation(route);
+      const url = `${docsUrl}/${documentation.fileName}`;
+
+      writeFiles(url, documentation.fileContent);
     }
-    console.log(`📄 ${url}`); // eslint-disable-line no-console
-    return true;
   });
 };
 
@@ -72,16 +86,7 @@ const start = ({
       app.listen(port, () => console.log(`🚀 App started on port: ${port}`.green)); // eslint-disable-line no-console
     });
 
-  writeDocs(docsUrl, () => {
-    routes.forEach((route) => {
-      if (route.docs) {
-        const documentation = generateDocumentation(route);
-        const url = `${docsUrl}/${documentation.fileName}`;
-
-        writeFiles(url, documentation.fileContent);
-      }
-    });
-  });
+  createDocs(routes, docsUrl);
 };
 
 module.exports = {
