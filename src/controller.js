@@ -63,7 +63,7 @@ export const ternary = ({ condition, iftrue, iffalse }) => {
   };
 };
 
-export default customContoller => (req, res) => {
+export default (customContoller, delay) => (req, res) => {
   const typeofCustomController = typeof customContoller;
   let response = {};
 
@@ -87,5 +87,5 @@ export default customContoller => (req, res) => {
     throw new Error(`Unacceptable type of controller: ${typeofCustomController}. It must be 'object' or 'function'.`);
   }
 
-  res.json(response);
+  setTimeout(() => res.json(response), delay);
 };

@@ -7,6 +7,7 @@ Run the server
 - `routes: [{ method, url, json, controller }]` – **required**, router settings
   - `method: string` – the request [method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
   - `url: string` – the endpoint url
+  - `delay: number = 0` – the response delay
   - `json: object` – the response JSON object of the request
   - `controller: (data, req, res) => object` – the custom controller
     - `data: { body, params, query, hostQuery }`
@@ -23,7 +24,7 @@ Run the server
     - `query: string[]` – the list of queries which planned to use
     - `body: object` – the body structure which planned to use
     - `hostQuery: string[]` – the list of host queries which planned to use
-- `defaultPort: nuber = 3000`
+- `defaultPort: number = 3000`
 - `docsUrl: string = path.resolve(process.cwd(), 'docs') ` – the absolute path to keep the docs
 
 ### `.ternary({ condition, iftrue, iffalse }) => object`
