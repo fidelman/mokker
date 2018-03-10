@@ -39,22 +39,19 @@ const writeFiles = (url, fileContent) => {
 };
 
 const clearDocsFolder = (docsUrl) => {
-  fs.readdir(docsUrl, (err, files) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        console.log(`Cannot find the path: ${docsUrl}`.red); // eslint-disable-line no-console
-      } else {
-        console.log(err); // eslint-disable-line no-console
-      }
+  try {
+    const files = fs.readdirSync(docsUrl);
+    Object.keys(files).forEach((key) => {
+      const file = files[key];
+      fs.unlinkSync(path.join(docsUrl, file));
+    });
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log(`Cannot find the path: ${docsUrl}`.red); // eslint-disable-line no-console
     } else {
-      Object.keys(files).forEach((key) => {
-        const file = files[key];
-        fs.unlink(path.join(docsUrl, file), (e) => {
-          if (e) throw e;
-        });
-      });
+      console.log(err); // eslint-disable-line no-console
     }
-  });
+  }
 };
 
 const createDocs = (routes, docsUrl) => {
