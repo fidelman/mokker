@@ -1,6 +1,6 @@
 {
   "name": "mokker",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Simple Rest API mock server",
   "module": "src/index.js",
   "main": "public/index.js",
