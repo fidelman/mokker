@@ -27,7 +27,7 @@ function parseArray(arr) {
   } else if (Array.isArray(firstItem)) {
     parsedArray = `${parseArray(firstItem)}[]`;
   } else if (typeof firstItem === 'object') {
-    parsedArray = parseObject(firstItem);
+    parsedArray = [parseObject(firstItem)];
   } else {
     parsedArray = `${typeof firstItem}[]`;
   }
@@ -100,6 +100,7 @@ const parseStringifiedObject = (stringifiedObject) => {
   const parsedObject = {};
   Object.keys(stringifiedObject).forEach((key) => {
     const value = stringifiedObject[key];
+
     const type = typeof value;
 
     if (type === 'string') {
@@ -117,6 +118,8 @@ const parseStringifiedObject = (stringifiedObject) => {
       parsedObject[key] = value;
     }
   });
+
+  if (parsedObject[0]) return [parsedObject[0]];
 
   return parsedObject;
 };
@@ -216,7 +219,9 @@ const generateDocsFromObject = (response, body, hostQuery = [], queryArray = [],
 
   let json;
 
-  if (typeof response === 'object') {
+  if (Array.isArray(response)) {
+    json = `[${parseObject(response)}]`;
+  } else if (typeof response === 'object') {
     json = parseObject(response);
   } else {
     const responseJSON = response({
