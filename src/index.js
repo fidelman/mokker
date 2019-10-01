@@ -19,8 +19,11 @@ app.use(morgan('dev'));
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS, PATCH');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key, X-On-Behalf-Of',
+    );
 
     res.sendStatus(200);
   } else {
@@ -74,19 +77,18 @@ const createDocs = (routes, docsUrl) => {
 const start = ({
   routes = [],
   defaultPort = 3000,
-  docsUrl = path.resolve(process.cwd(), 'docs')
+  docsUrl = path.resolve(process.cwd(), 'docs'),
 }) => {
   app.use('/', createRouter(routes));
-  choosePort('0.0.0.0', defaultPort)
-    .then((port) => {
-      if (port == null) return;
-      app.listen(port, () => console.log(`🚀 App started on port: ${port}`.green)); // eslint-disable-line no-console
-    });
+  choosePort('0.0.0.0', defaultPort).then((port) => {
+    if (port == null) return;
+    app.listen(port, () => console.log(`🚀 App started on port: ${port}`.green)); // eslint-disable-line no-console
+  });
 
   createDocs(routes, docsUrl);
 };
 
 module.exports = {
   start,
-  ternary
+  ternary,
 };
