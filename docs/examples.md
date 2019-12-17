@@ -78,6 +78,61 @@ mokker.start({ routes });
 }
 ```
 
+## Custom request headers
+
+### Set custom headers
+
+```js
+// server.js
+const mokker = require('mokker');
+
+const routes = [{
+    method: 'get',
+    url: '/api',
+    json: { is: 'done' }
+}];
+
+mokker.start({
+  routes,
+  headers: {
+    'Access-Control-Allow-Headers': 'MyCustomHeader'
+  }
+});
+```
+
+### Extend default request headers
+
+Default request headers are accessible via `mokker.requestHeaders`. Its value is:
+
+```js
+{
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS, PATCH',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key, X-On-Behalf-Of'
+}
+```
+
+You can extend headers as following:
+
+```js
+// server.js
+const mokker = require('mokker');
+
+const routes = [{
+    method: 'get',
+    url: '/api',
+    json: { is: 'done' }
+}];
+
+mokker.start({
+  routes,
+  headers: {
+    ...mokker.requestHeaders,
+    'Access-Control-Allow-Headers': 'MyCustomHeader'
+  }
+});
+```
+
 ## The documented request
 
 ### Source code
