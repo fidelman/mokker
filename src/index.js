@@ -16,20 +16,33 @@ const app = express();
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS, PATCH');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key, X-On-Behalf-Of',
-    );
+const requestHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS, PATCH',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Redmine-API-Key, X-On-Behalf-Of'
+};
 
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+/**
+* @param {Object<[key: string]: string>} headers
+* @returns void
+*/
+const setupHeaders = (headers) => {
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      const headersArray = Object.keys(headers);
+
+      if (headersArray.length) {
+        headersArray.forEach((headerID) => {
+          res.header(headerID, headers[headerID]);
+        });
+      }
+
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
+};
 
 const writeFiles = (url, fileContent) => {
   fs.writeFile(url, json2md(fileContent), (err) => {
@@ -78,7 +91,10 @@ const start = ({
   routes = [],
   defaultPort = 3000,
   docsUrl = path.resolve(process.cwd(), 'docs'),
+  headers = requestHeaders,
 }) => {
+  setupHeaders(headers);
+
   app.use('/', createRouter(routes));
   choosePort('0.0.0.0', defaultPort).then((port) => {
     if (port == null) return;
@@ -89,6 +105,7 @@ const start = ({
 };
 
 module.exports = {
+  requestHeaders,
   start,
   ternary,
 };

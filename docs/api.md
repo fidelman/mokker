@@ -26,6 +26,7 @@ Run the server
     - `hostQuery: string[]` – the list of host queries which planned to use
 - `defaultPort: number = 3000`
 - `docsUrl: string = path.resolve(process.cwd(), 'docs') ` – the absolute path to keep the docs
+- `headers: object` – optional, override request headers
 
 ### `.ternary({ condition, iftrue, iffalse }) => object`
 
